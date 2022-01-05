@@ -2,6 +2,7 @@ package com.co.sofka.biblioteca.dtos;
 
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public class RecursoDTO {
 
@@ -21,7 +22,7 @@ public class RecursoDTO {
     }
 
     public RecursoDTO(String id, String tipo, String tematica, LocalDateTime fechaPrestamo, Boolean disponibilidad) {
-        this.id = id;
+        this.id = UUID.randomUUID().toString().substring(0,10);
         this.tipo = tipo;
         this.tematica = tematica;
         this.fechaPrestamo = fechaPrestamo;
