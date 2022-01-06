@@ -92,4 +92,15 @@ public class RecursoRouter {
         );
     }
 
+    @Bean
+    public RouterFunction<ServerResponse> recomendarRecursos(RecomendarRecursosUseCase recomendarRecursosUseCase){
+        return route(GET("/recursos/recomendacion"), request -> {
+            return ServerResponse.ok()
+                            .body(BodyInserters.fromPublisher(
+                                    recomendarRecursosUseCase.apply(request.queryParam("tipo"), request.queryParam("tematica"))
+                                    , RecursoDTO.class
+                            ));
+        });
+    }
+
 }
