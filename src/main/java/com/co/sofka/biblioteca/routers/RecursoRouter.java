@@ -52,7 +52,7 @@ public class RecursoRouter {
     }
 
     @Bean
-    public RouterFunction<ServerResponse> actualizarRecurso(ActualizarRecursoUseCase actualizarRecursoUseCase){
+    public RouterFunction<ServerResponse> actualizarRecurso(ActualizarRecursoUseCase actualizarRecursoUseCase) {
         return route(PUT("/recurso/{id}").and(accept(MediaType.APPLICATION_JSON)),
                 request -> request.bodyToMono(RecursoDTO.class)
                         .flatMap(recursoDTO -> actualizarRecursoUseCase.apply(recursoDTO))
@@ -63,10 +63,21 @@ public class RecursoRouter {
     }
 
     @Bean
-    public RouterFunction<ServerResponse> eleminarRecurso(EliminarRecursoUseCase eliminarRecursoUseCase){
+    public RouterFunction<ServerResponse> eleminarRecurso(EliminarRecursoUseCase eliminarRecursoUseCase) {
         return route(DELETE("/recurso/{id}"),
                 request -> ServerResponse.noContent()
                         .build(eliminarRecursoUseCase.apply(request.pathVariable("id")))
+        );
+    }
+
+    @Bean
+    public RouterFunction<ServerResponse> prestarRescurso(PrestarRecursoUseCase prestarRecursoUseCase) {
+        return route(PUT("recurso/prestar/{id}"),
+                request -> ServerResponse.ok()
+                        .body(BodyInserters.fromPublisher(
+                                prestarRecursoUseCase.apply(request.pathVariable("id")),
+                                String.class)
+                        )
         );
     }
 
