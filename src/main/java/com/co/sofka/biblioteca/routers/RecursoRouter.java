@@ -1,13 +1,10 @@
 package com.co.sofka.biblioteca.routers;
 
 import com.co.sofka.biblioteca.dtos.RecursoDTO;
-import com.co.sofka.biblioteca.usecases.CrearRecursoUseCase;
-import com.co.sofka.biblioteca.usecases.ObtenerPorIdUseCase;
-import com.co.sofka.biblioteca.usecases.ObtenerRecursosUseCase;
+import com.co.sofka.biblioteca.usecases.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
-import org.springframework.web.reactive.function.BodyInserter;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -53,4 +50,24 @@ public class RecursoRouter {
                         )
         );
     }
+
+    @Bean
+    public RouterFunction<ServerResponse> actualizarRecurso(ActualizarRecursoUseCase actualizarRecursoUseCase){
+        return route(PUT("/recurso/{id}").and(accept(MediaType.APPLICATION_JSON)),
+                request -> request.bodyToMono(RecursoDTO.class)
+                        .flatMap(recursoDTO -> actualizarRecursoUseCase.apply(recursoDTO))
+                        .flatMap(result -> ServerResponse.ok()
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .bodyValue(result))
+        );
+    }
+
+    @Bean
+    public RouterFunction<ServerResponse> eleminarRecurso(EliminarRecursoUseCase eliminarRecursoUseCase){
+        return route(DELETE("/recurso/{id}"),
+                request -> ServerResponse.noContent()
+                        .build(eliminarRecursoUseCase.apply(request.pathVariable("id")))
+        );
+    }
+
 }
